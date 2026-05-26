@@ -1,0 +1,23 @@
+project: diff_sql
+
+paths:
+  eval_input_dir: benchmarks
+  eval_output_dir: outputs/postgres
+  benchmark_file: benchmarks/eff-sql-pg.jsonl
+  postgresql_scale_dumps: postgre_scale_table_dumps
+  tpch_raw_data_3g: tpch/raw_data/3g
+  train_sft: data/train_dataset/train_sft.parquet
+  dev_sft: data/train_dataset/test_sft.parquet
+  train_grpo: data/train_dataset/train_grpo.parquet
+  dev_grpo: data/train_dataset/test_grpo.parquet
+
+training:
+  sft_config: configs/model_training/sft.yaml
+  grpo_config: configs/model_training/grpo.yaml
+  output_root: checkpoints
+
+evaluation:
+  dialect: postgres
+  benchmark_scale: scale
+  sql_mode: patch
+  response_field: prediction

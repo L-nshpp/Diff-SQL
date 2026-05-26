@@ -1,0 +1,16 @@
+dialects:
+  - postgres
+
+default:
+  dialect: postgres
+  benchmark_scale: scale
+  sql_mode: patch
+  response_field: prediction
+  input_dir: benchmarks
+  benchmark_file: benchmarks/eff-sql-pg.jsonl
+  output_dir: outputs/postgres
+
+docker:
+  small_db_compose: docker-compose.smalldb.yml
+  tpch_compose: docker-compose.tpch.yml
+  eval_container: so_eval_env

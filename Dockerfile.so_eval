@@ -1,0 +1,16 @@
+# Dockerfile.python
+FROM python:3.10
+
+WORKDIR /workspace
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt /workspace/
+RUN pip install -r /workspace/requirements.txt
+
+# Install the PostgreSQL client so 'dropdb', 'createdb', and 'psql' are available
+RUN apt-get update && apt-get install -y postgresql-client
+
+USER root
+
+# Set entrypoint to keep the container running for testing
+CMD ["tail", "-f", "/dev/null"]

@@ -1,0 +1,21 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Local outputs
+outputs/
+SO_evaluation/
+
+# Large database assets are released via HuggingFace.
+postgre_table_dumps/
+postgre_scale_table_dumps/*
+!postgre_scale_table_dumps/README.md
+tpch/raw_data/*
+!tpch/raw_data/README.md
+
+# Local model and training artifacts
+checkpoints/
+models/
+*.parquet
+data/train_dataset/*
+!data/train_dataset/README.md

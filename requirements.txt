@@ -1,0 +1,30 @@
+psycopg2==2.9.9
+pandas==2.1.0
+numpy==1.26.1
+sqlparse==0.5.2
+tqdm==4.67.0
+rich==13.9.4
+httpx==0.27.2
+nltk==3.9.1
+jsonlines==4.0.0
+tabulate==0.9.0
+sqlfluff==3.3.1
+func_timeout==4.3.5
+google-generativeai==0.8.4
+openai>=1.0.0
+stackapi>=0.3.0
+tenacity>=8.0.0
+python-dateutil>=2.8.2
+pyarrow>=14.0.0
+
+# Additional dependencies used by the model-training scripts.
+# Install the VERL package/version used by your training environment separately if needed.
+torch
+transformers
+datasets
+ray
+hydra-core
+omegaconf
+sqlglot
+sql-metadata
+psycopg

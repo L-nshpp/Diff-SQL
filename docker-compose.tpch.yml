@@ -1,0 +1,24 @@
+services:
+  tpch_postgresql_3g:
+    image: postgres:16
+    container_name: tpch_postgresql_3g
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+      TPCH_DB: tpch_3g
+      TPCH_SCALE: 3g
+    ports:
+      - "5438:5432"
+    volumes:
+      - tpch_postgresql_3g_data:/var/lib/postgresql/data
+      - ./tpch:/tpch
+      - ./tpch/dialects/postgresql/init/01-bootstrap.sh:/docker-entrypoint-initdb.d/01-bootstrap.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  tpch_postgresql_3g_data:

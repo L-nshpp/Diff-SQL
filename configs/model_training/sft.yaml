@@ -1,0 +1,43 @@
+method: sft
+framework: verl
+entrypoint: src/training/model_training/sft/run_sft.sh
+
+paths:
+  model_path: ${MODEL_PATH:-models/base-model}
+  model_name: ${MODEL_NAME:-base-model}
+  train_data: ${TRAIN_DATA:-data/train_dataset/train_sft.parquet}
+  dev_data: ${DEV_DATA:-data/train_dataset/test_sft.parquet}
+  output_dir: ${OUTPUT_DIR:-checkpoints/sft}
+
+distributed:
+  nnodes: 1
+  nproc_per_node: ${NPROC_PER_NODE:-8}
+
+data:
+  prompt_key: prompt
+  response_key: response
+  micro_batch_size_per_gpu: 2
+  max_length: 8192
+  train_batch_size: 16
+  truncation: right
+
+model:
+  dtype: bfloat16
+  enable_gradient_checkpointing: true
+  lora_rank: 64
+  lora_alpha: 128
+  target_modules: all-linear
+
+trainer:
+  project_name: diff_sql_sft
+  experiment_name_suffix: diff_sql_sft
+  total_epochs: 4
+  logger:
+    - console
+    - tensorboard
+  save_freq: 35
+  test_freq: 30
+
+optim:
+  learning_rate: 5e-5
+  weight_decay: 0.01

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "small_db": {
+    "postgresql": {
+      "backend": "docker",
+      "container": "postgresql_small",
+      "host": "127.0.0.1",
+      "port": 7001,
+      "user": "root",
+      "password": "123456"
+    }
+  }
+}

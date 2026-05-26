@@ -1,0 +1,58 @@
+method: grpo
+framework: verl
+entrypoint: src/training/model_training/grpo/run_grpo.sh
+
+paths:
+  model_path: ${MODEL_PATH:-checkpoints/sft/models}
+  train_data: ${TRAIN_DATA:-data/train_dataset/train_grpo.parquet}
+  test_data: ${TEST_DATA:-data/train_dataset/test_grpo.parquet}
+  output_dir: ${OUTPUT_DIR:-checkpoints/grpo}
+  reward_file: ${REWARD_FILE:-scripts/sql_reward_record.py}
+
+algorithm:
+  adv_estimator: grpo
+  critic_enable: false
+
+data:
+  train_batch_size: 32
+  max_prompt_length: 8192
+  max_response_length: 1024
+
+model:
+  dtype: bfloat16
+  enable_gradient_checkpointing: true
+  lora_rank: 64
+  lora_alpha: 128
+  target_modules: all-linear
+
+actor_rollout_ref:
+  rollout_max_num_batched_tokens: 10240
+  model_max_model_len: 10240
+  tensor_model_parallel_size: 1
+  actor_learning_rate: 5e-6
+  actor_kl_loss_coef: 0.01
+  rollout_n: 8
+  ref_param_offload: true
+  ppo_mini_batch_size: 8
+  rollout_gpu_memory_utilization: 0.8
+  ppo_micro_batch_size_per_gpu: 4
+  ref_log_prob_micro_batch_size_per_gpu: 4
+  rollout_log_prob_micro_batch_size_per_gpu: 4
+
+reward_model:
+  overlong_buffer_enable: true
+  overlong_buffer_penalty_factor: 1.0
+
+trainer:
+  n_gpus_per_node: ${NPROC_PER_NODE:-4}
+  test_freq: 25
+  save_freq: 20
+  project_name: sql_patch_optimize
+  experiment_name: v1_grpo_db_opt
+  resume_from_path: ${RESUME_FROM_PATH:-}
+  total_training_steps: ${TOTAL_TRAINING_STEPS:-}
+
+reward:
+  custom_reward_function:
+    path: ${REWARD_FILE:-scripts/sql_reward_record.py}
+    name: sql_optimize

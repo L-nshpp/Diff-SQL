@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "notes": "PostgreSQL-only benchmark-scale TPC-H routing map.",
+  "datasets": {
+    "tpch_3g": {
+      "dialects": {
+        "postgresql": {
+          "backend": "docker",
+          "container": "tpch_postgresql_3g",
+          "host": "127.0.0.1",
+          "port": 5438,
+          "database": "tpch_3g",
+          "user": "postgres",
+          "password": "123456"
+        }
+      }
+    },
+    "tpch_01g": {
+      "dialects": {
+        "postgresql": {
+          "backend": "docker",
+          "container": "tpch_postgresql_3g",
+          "host": "127.0.0.1",
+          "port": 5438,
+          "database": "tpch_3g",
+          "user": "postgres",
+          "password": "123456"
+        }
+      }
+    }
+  }
+}
