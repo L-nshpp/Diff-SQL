@@ -1,4 +1,4 @@
-Place the local PostgreSQL scale BIRD-Interact dumps here.
+Place the local PostgreSQL scale BIRD-Interact table dumps here.
 
 Expected subdirectories:
 

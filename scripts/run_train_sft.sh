@@ -6,9 +6,9 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${ROOT_DIR}"
 
-: "${TRAIN_SCRIPT:=src/training/model_training/sft/run_sft.sh}"
+: "${TRAIN_SCRIPT:=diff_sql/training/sft/run_sft.sh}"
 : "${TRAIN_CONFIG:=configs/model_training/sft.yaml}"
-: "${TRAIN_DATA:=data/patch-generator-training-dataset/train.parquet}"
+: "${TRAIN_DATA:=data/training/patch-generator/train.parquet}"
 : "${DEV_DATA:=${TRAIN_DATA}}"
 : "${OUTPUT_DIR:=checkpoints/sft}"
 

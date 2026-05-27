@@ -1,15 +1,15 @@
 project: diff_sql
 
 paths:
-  eval_input_dir: benchmarks
+  eval_input_dir: data/benchmark/effi-sql
   eval_output_dir: outputs/postgres
-  benchmark_file: benchmarks/eff-sql-pg.jsonl
-  postgresql_scale_dumps: postgre_scale_table_dumps
-  tpch_raw_data_3g: tpch/raw_data/3g
-  patch_generator_train: data/patch-generator-training-dataset/train.parquet
-  constraint_aligner_sft_warmup_train: data/constraint-aligner-training-dataset/train.parquet
+  benchmark_file: data/benchmark/effi-sql/eff-sql-pg.jsonl
+  postgresql_scale_dumps: data/databases/bird-interact-scale/table-dumps
+  tpch_raw_data_3g: data/databases/tpch-3g/raw
+  patch_generator_train: data/training/patch-generator/train.parquet
+  constraint_aligner_sft_warmup_train: data/training/constraint-aligner/train.parquet
   grpo_train: null
-  hf_benchmark_file: data/effi-sql/benchmark.jsonl
+  hf_benchmark_file: data/benchmark/effi-sql/benchmark.jsonl
 
 training:
   sft_config: configs/model_training/sft.yaml

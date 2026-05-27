@@ -12,7 +12,7 @@ Place the patch-generator training parquet here:
 train.parquet
 ```
 
-Expected HuggingFace path:
+Source path in the HuggingFace dataset:
 
 ```text
 data/patch-generator-training-dataset/train.parquet

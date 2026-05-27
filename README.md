@@ -1,86 +1,87 @@
 # Diff-SQL
 
-Diff-SQL is the code release for PostgreSQL SQL efficiency optimization. This repository keeps the runnable code and Docker setup lightweight. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
+Diff-SQL is the code release for PostgreSQL SQL efficiency optimization. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
 
 ```text
 https://huggingface.co/datasets/Lnsshp/Diff-SQL
 ```
 
-The public package is organized for the benchmark-scale setting used in the paper:
-
-- BIRD-Interact-style PostgreSQL scale databases prepared locally.
-- TPC-H PostgreSQL 3G.
-- Patch-style and end-to-end SQL evaluation.
-- SFT warmup and GRPO training entry points.
+This repository is organized for the benchmark-scale setting used in the paper: scale BIRD-Interact PostgreSQL databases, TPC-H PostgreSQL 3G, patch-style/end-to-end SQL evaluation, and verl-based SFT/GRPO training.
 
 ## Repository Layout
 
 ```text
 .
-├── benchmarks/                     # PostgreSQL benchmark JSONL files
-├── configs/
-│   ├── db_mapping.json             # PostgreSQL scale DB mapping
-│   ├── tpch_mapping.json           # PostgreSQL TPC-H 3G mapping
-│   ├── eval.yaml
-│   └── model_training/             # SFT/GRPO training configs
-├── data/                           # HuggingFace training/benchmark placeholders
-│   ├── patch-generator-training-dataset/
-│   ├── constraint-aligner-training-dataset/
-│   └── effi-sql/
-├── postgre_scale_table_dumps/      # local PostgreSQL scale DB placeholder
-├── scripts/
-│   ├── benchmark_up.sh             # start PostgreSQL benchmark DBs
-│   ├── benchmark_eval.sh           # run eval inside Docker
-│   ├── benchmark_aggregate.sh      # aggregate EX and R-VES
-│   ├── benchmark_down.sh
-│   ├── run_eval.sh
-│   ├── run_train_sft.sh
-│   └── run_train_grpo.sh
-├── src/
+├── data/
+│   ├── benchmark/effi-sql/         # Effi-SQL benchmark files
+│   ├── training/                   # HuggingFace training data placeholders
+│   │   ├── patch-generator/
+│   │   └── constraint-aligner/
+│   └── databases/                  # local DB asset placeholders
+│       ├── bird-interact-scale/
+│       └── tpch-3g/
+├── diff_sql/
 │   ├── evaluation/                 # PostgreSQL evaluator
-│   └── training/model_training/    # SFT/GRPO training code
-└── tpch/raw_data/                  # local/generated TPC-H 3G placeholder
+│   └── training/                   # verl SFT / GRPO launch code
+├── docker/
+│   ├── compose/                    # Docker Compose files
+│   ├── postgresql/                 # BIRD-Interact DB init script
+│   └── tpch/                       # TPC-H PostgreSQL schema/import scripts
+├── configs/
+├── scripts/                        # user-facing commands
+├── Dockerfile.postgresql
+├── Dockerfile.so_eval
+├── requirements.txt
+└── README.md
 ```
 
 Prompt construction, crawling, and intermediate data-generation scripts are intentionally not included in this release. Use the finalized HuggingFace training data for training.
 
 ## HuggingFace Assets
 
-Download the HuggingFace dataset from `https://huggingface.co/datasets/Lnsshp/Diff-SQL` and place or symlink the assets into these paths:
+The HuggingFace dataset is structured as:
 
 ```text
 data/
   patch-generator-training-dataset/
-    train.parquet                  # Patch Generator SFT
+    train.parquet
   constraint-aligner-training-dataset/
-    train.parquet                  # Constraint Aligner SFT warmup
+    train.parquet
   effi-sql/
     benchmark.jsonl
 ```
 
-Example symlinks:
+Place or symlink those files into the repository paths below:
+
+```text
+data/training/patch-generator/train.parquet
+data/training/constraint-aligner/train.parquet
+data/benchmark/effi-sql/benchmark.jsonl
+```
+
+Example:
 
 ```bash
-ln -s /path/to/hf/data/patch-generator-training-dataset ./data/patch-generator-training-dataset
-ln -s /path/to/hf/data/constraint-aligner-training-dataset ./data/constraint-aligner-training-dataset
-ln -s /path/to/hf/data/effi-sql ./data/effi-sql
+ln -s /path/to/hf/data/patch-generator-training-dataset/train.parquet data/training/patch-generator/train.parquet
+ln -s /path/to/hf/data/constraint-aligner-training-dataset/train.parquet data/training/constraint-aligner/train.parquet
+ln -s /path/to/hf/data/effi-sql/benchmark.jsonl data/benchmark/effi-sql/benchmark.jsonl
 ```
 
 ## Database Assets
 
-Prepare the PostgreSQL scale BIRD-Interact databases locally and place the table dumps here:
+Prepare the PostgreSQL scale BIRD-Interact table dumps here:
 
 ```text
-postgre_scale_table_dumps/
+data/databases/bird-interact-scale/table-dumps/
   polar_equipment_template/
   robot_fault_prediction_template/
   solar_panel_template/
 ```
 
-Place or generate TPC-H 3G raw data here:
+Generate or place TPC-H 3G raw data here:
 
 ```text
-tpch/raw_data/3g/
+data/databases/tpch-3g/raw/
   region.tbl
   nation.tbl
   supplier.tbl
@@ -91,23 +92,21 @@ tpch/raw_data/3g/
   lineitem.tbl
 ```
 
-If you prefer to generate the TPC-H 3G raw data locally, download the official TPC-H Tools package from the TPC current specifications page:
+To generate TPC-H 3G raw data, download the official TPC-H Tools package from:
 
 ```text
 https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
 ```
 
-After accepting the TPC license, unzip the tools package and build `dbgen`. Then run:
+After accepting the TPC license, unzip the tools package and build `dbgen`:
 
 ```bash
-mkdir -p tpch/raw_data/3g
+mkdir -p /path/to/diff-sql/data/databases/tpch-3g/raw
 cd /path/to/tpc-h-tools/dbgen
 make
 ./dbgen -s 3 -f
-mv *.tbl /path/to/diff-sql/tpch/raw_data/3g/
+mv *.tbl /path/to/diff-sql/data/databases/tpch-3g/raw/
 ```
-
-The generated directory should contain `region.tbl`, `nation.tbl`, `supplier.tbl`, `customer.tbl`, `part.tbl`, `partsupp.tbl`, `orders.tbl`, and `lineitem.tbl`.
 
 ## Installation
 
@@ -121,35 +120,13 @@ Docker is required for execution evaluation.
 
 ## Evaluation
 
-Start the PostgreSQL benchmark-scale databases and eval container:
+Start the PostgreSQL benchmark databases and eval container:
 
 ```bash
-bash scripts/benchmark_up.sh
+bash scripts/db_up.sh
 ```
 
-On the first start, Docker automatically initializes TPC-H PostgreSQL:
-
-```text
-tpch/dialects/postgresql/init/01-bootstrap.sh
-tpch/dialects/postgresql/import.sh
-```
-
-Those scripts create `tpch_3g`, create the TPC-H tables, import files from `tpch/raw_data/3g/`, and run `ANALYZE`.
-
-To import only the TPC-H database after placing raw data:
-
-```bash
-SMALLDB_ONLY=0 BUILD_IMAGES=0 docker compose -f docker-compose.tpch.yml up -d tpch_postgresql_3g
-```
-
-If you replace the TPC-H raw data after the Docker volume has already been initialized, recreate the TPC-H volume and import again:
-
-```bash
-docker compose -f docker-compose.tpch.yml down -v
-docker compose -f docker-compose.tpch.yml up -d tpch_postgresql_3g
-```
-
-Run patch-style evaluation on the bundled benchmark copy, `benchmarks/eff-sql-pg.jsonl`:
+Run patch-style evaluation on the bundled benchmark copy:
 
 ```bash
 EVAL_SQL_MODE=patch \
@@ -158,7 +135,7 @@ EVAL_INPUT_FILE=eff-sql-pg.jsonl \
 bash scripts/run_eval.sh
 ```
 
-For direct full-SQL outputs, use:
+For direct full-SQL outputs:
 
 ```bash
 EVAL_SQL_MODE=end2end \
@@ -170,45 +147,66 @@ bash scripts/run_eval.sh
 Aggregate metrics:
 
 ```bash
-bash scripts/benchmark_aggregate.sh
+bash scripts/aggregate_eval.sh
 ```
 
 Stop the databases:
 
 ```bash
-bash scripts/benchmark_down.sh
+bash scripts/db_down.sh
 ```
 
-By default, evaluation uses PostgreSQL scale databases and TPC-H 3G. Outputs are written to `outputs/postgres/`.
+By default, evaluation uses PostgreSQL scale BIRD-Interact databases and TPC-H 3G. Outputs are written to `outputs/postgres/`.
 
-To evaluate the HuggingFace benchmark file directly, use:
+To evaluate the HuggingFace benchmark file:
 
 ```bash
 EVAL_SQL_MODE=patch \
 EVAL_RESPONSE_FIELD=prediction \
-EVAL_INPUT_DIR=/workspace/data/effi-sql \
 EVAL_INPUT_FILE=benchmark.jsonl \
 bash scripts/run_eval.sh
 ```
 
+TPC-H PostgreSQL is initialized through:
+
+```text
+docker/tpch/postgresql/init/01-bootstrap.sh
+docker/tpch/postgresql/import.sh
+```
+
+To import only the TPC-H database after placing raw data:
+
+```bash
+SMALLDB_ONLY=0 BUILD_IMAGES=0 docker compose -f docker/compose/tpch.yml up -d tpch_postgresql_3g
+```
+
+If you replace the TPC-H raw data after the Docker volume has already been initialized:
+
+```bash
+docker compose -f docker/compose/tpch.yml down -v
+docker compose -f docker/compose/tpch.yml up -d tpch_postgresql_3g
+```
+
 ## Training
 
-After placing the HuggingFace parquet files under `data/`, run Patch Generator SFT:
+Run Patch Generator SFT:
 
 ```bash
 bash scripts/run_train_sft.sh
 ```
 
-To run Constraint Aligner SFT warmup, use the same SFT entry point with the constraint-aligner warmup data:
+Run Constraint Aligner SFT warmup:
 
 ```bash
-TRAIN_DATA=data/constraint-aligner-training-dataset/train.parquet \
+TRAIN_DATA=data/training/constraint-aligner/train.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/constraint-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
 The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is Constraint Aligner SFT warmup data.
+
+Run GRPO training with your local training file:
 
 ```bash
 TRAIN_DATA=/path/to/train.parquet \
@@ -220,8 +218,9 @@ bash scripts/run_train_grpo.sh
 
 ## Benchmark Files
 
-- `benchmarks/eff-sql-pg.jsonl`: PostgreSQL benchmark examples. The HuggingFace copy is `data/effi-sql/benchmark.jsonl`.
-- `benchmarks/eff-sql-pg-with-difficulty-level.jsonl`: the same benchmark with difficulty labels.
+- `data/benchmark/effi-sql/eff-sql-pg.jsonl`: PostgreSQL benchmark examples used by the default evaluation command.
+- `data/benchmark/effi-sql/eff-sql-pg-with-difficulty-level.jsonl`: the same benchmark with difficulty labels.
+- `data/benchmark/effi-sql/benchmark.jsonl`: optional symlink/copy of the HuggingFace benchmark file.
 
 Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_time`, `base_explain_analyze`, and `optimized_explain_analyze`.
 
@@ -233,6 +232,6 @@ Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_
 - If Docker volumes were created with older assets, recreate them with:
 
 ```bash
-PURGE_VOLUMES=1 bash scripts/benchmark_down.sh
-bash scripts/benchmark_up.sh
+PURGE_VOLUMES=1 bash scripts/db_down.sh
+bash scripts/db_up.sh
 ```

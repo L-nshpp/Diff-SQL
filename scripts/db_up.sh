@@ -13,7 +13,7 @@ case "${BENCHMARK_SCALE}" in
   default|base|standard) BENCHMARK_SCALE="default" ;;
   scale|scaled) BENCHMARK_SCALE="scale" ;;
   *)
-    echo "[benchmark_up] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
+    echo "[db_up] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
     exit 1
     ;;
 esac
@@ -24,7 +24,7 @@ case "${POSTGRES_DUMP_VARIANT}" in
   default|base|standard) POSTGRES_DUMP_VARIANT="default" ;;
   scale|scaled) POSTGRES_DUMP_VARIANT="scale" ;;
   *)
-    echo "[benchmark_up] Unsupported POSTGRES_DUMP_VARIANT=${POSTGRES_DUMP_VARIANT}. Use one of: default, scale"
+    echo "[db_up] Unsupported POSTGRES_DUMP_VARIANT=${POSTGRES_DUMP_VARIANT}. Use one of: default, scale"
     exit 1
     ;;
 esac
@@ -34,9 +34,9 @@ export POSTGRES_DUMP_VARIANT
 
 POSTGRES_TPCH_SERVICE="tpch_postgresql_3g"
 
-compose_files=(-f docker-compose.smalldb.yml)
+compose_files=(-f docker/compose/smalldb.yml)
 if [[ "${SMALLDB_ONLY}" != "1" ]]; then
-  compose_files+=(-f docker-compose.tpch.yml)
+  compose_files+=(-f docker/compose/tpch.yml)
 fi
 
 up_args=(up -d)
@@ -50,7 +50,7 @@ case "${DIALECT}" in
     services=(postgresql_small "${POSTGRES_TPCH_SERVICE}" so_eval_env)
     ;;
   *)
-    echo "[benchmark_up] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
+    echo "[db_up] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
     exit 1
     ;;
 esac
@@ -66,21 +66,21 @@ if [[ "${SMALLDB_ONLY}" == "1" && ${#services[@]} -gt 0 ]]; then
   services=("${filtered[@]}")
 fi
 
-echo "[benchmark_up] DIALECT=${DIALECT}"
-echo "[benchmark_up] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
-echo "[benchmark_up] POSTGRES_DUMP_VARIANT=${POSTGRES_DUMP_VARIANT}"
-echo "[benchmark_up] BUILD_IMAGES=${BUILD_IMAGES}"
-echo "[benchmark_up] Using compose files: ${compose_files[*]}"
+echo "[db_up] DIALECT=${DIALECT}"
+echo "[db_up] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
+echo "[db_up] POSTGRES_DUMP_VARIANT=${POSTGRES_DUMP_VARIANT}"
+echo "[db_up] BUILD_IMAGES=${BUILD_IMAGES}"
+echo "[db_up] Using compose files: ${compose_files[*]}"
 if [[ ${#services[@]} -gt 0 ]]; then
-  echo "[benchmark_up] Services: ${services[*]}"
+  echo "[db_up] Services: ${services[*]}"
 fi
 
-echo "[benchmark_up] PostgreSQL TPCH service: ${POSTGRES_TPCH_SERVICE}"
-echo "[benchmark_up] If you changed BENCHMARK_SCALE or POSTGRES_DUMP_VARIANT, recreate PostgreSQL with PURGE_VOLUMES=1 bash scripts/benchmark_down.sh before starting."
+echo "[db_up] PostgreSQL TPCH service: ${POSTGRES_TPCH_SERVICE}"
+echo "[db_up] If you changed BENCHMARK_SCALE or POSTGRES_DUMP_VARIANT, recreate PostgreSQL with PURGE_VOLUMES=1 bash scripts/db_down.sh before starting."
 
 docker compose "${compose_files[@]}" "${up_args[@]}" "${services[@]}"
 
-echo "[benchmark_up] Current service status"
+echo "[db_up] Current service status"
 if [[ ${#services[@]} -gt 0 ]]; then
   docker compose "${compose_files[@]}" ps "${services[@]}"
 else

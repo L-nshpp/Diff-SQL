@@ -1,12 +1,12 @@
 method: sft
 framework: verl
-entrypoint: src/training/model_training/sft/run_sft.sh
+entrypoint: diff_sql/training/sft/run_sft.sh
 
 paths:
   model_path: ${MODEL_PATH:-models/base-model}
   model_name: ${MODEL_NAME:-base-model}
-  train_data: ${TRAIN_DATA:-data/patch-generator-training-dataset/train.parquet}
-  dev_data: ${DEV_DATA:-data/patch-generator-training-dataset/train.parquet}
+  train_data: ${TRAIN_DATA:-data/training/patch-generator/train.parquet}
+  dev_data: ${DEV_DATA:-data/training/patch-generator/train.parquet}
   output_dir: ${OUTPUT_DIR:-checkpoints/sft}
 
 distributed:

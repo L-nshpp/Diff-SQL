@@ -4,7 +4,7 @@ set -x
 
 nproc_per_node="${NPROC_PER_NODE:-8}"
 
-: "${TRAIN_DATA:=data/patch-generator-training-dataset/train.parquet}"
+: "${TRAIN_DATA:=data/training/patch-generator/train.parquet}"
 : "${DEV_DATA:=${TRAIN_DATA}}"
 : "${MODEL_PATH:=models/base-model}"
 : "${MODEL_NAME:=base-model}"

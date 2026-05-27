@@ -12,8 +12,9 @@ services:
       - "5438:5432"
     volumes:
       - tpch_postgresql_3g_data:/var/lib/postgresql/data
-      - ./tpch:/tpch
-      - ./tpch/dialects/postgresql/init/01-bootstrap.sh:/docker-entrypoint-initdb.d/01-bootstrap.sh
+      - ../../docker/tpch:/tpch/dialects
+      - ../../data/databases/tpch-3g/raw:/tpch/raw_data/3g
+      - ../../docker/tpch/postgresql/init/01-bootstrap.sh:/docker-entrypoint-initdb.d/01-bootstrap.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

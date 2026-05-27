@@ -1,6 +1,6 @@
 method: grpo
 framework: verl
-entrypoint: src/training/model_training/grpo/run_grpo.sh
+entrypoint: diff_sql/training/grpo/run_grpo.sh
 
 paths:
   model_path: ${MODEL_PATH:-checkpoints/sft/models}

@@ -12,16 +12,16 @@ case "${BENCHMARK_SCALE}" in
   default|base|standard) BENCHMARK_SCALE="default" ;;
   scale|scaled) BENCHMARK_SCALE="scale" ;;
   *)
-    echo "[benchmark_status] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
+    echo "[db_status] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
     exit 1
     ;;
 esac
 
 POSTGRES_TPCH_SERVICE="tpch_postgresql_3g"
 
-compose_files=(-f docker-compose.smalldb.yml)
+compose_files=(-f docker/compose/smalldb.yml)
 if [[ "${SMALLDB_ONLY}" != "1" ]]; then
-  compose_files+=(-f docker-compose.tpch.yml)
+  compose_files+=(-f docker/compose/tpch.yml)
 fi
 
 services=()
@@ -34,7 +34,7 @@ case "${DIALECT}" in
     )
     ;;
   *)
-    echo "[benchmark_status] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
+    echo "[db_status] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
     exit 1
     ;;
 esac
@@ -50,7 +50,7 @@ if [[ "${SMALLDB_ONLY}" == "1" && ${#services[@]} -gt 0 ]]; then
   services=("${filtered[@]}")
 fi
 
-echo "[benchmark_status] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
+echo "[db_status] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
 if [[ ${#services[@]} -gt 0 ]]; then
   docker compose "${compose_files[@]}" ps "${services[@]}"
 else

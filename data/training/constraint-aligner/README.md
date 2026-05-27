@@ -12,7 +12,7 @@ Place the constraint-aligner SFT warmup parquet here:
 train.parquet
 ```
 
-Expected HuggingFace path:
+Source path in the HuggingFace dataset:
 
 ```text
 data/constraint-aligner-training-dataset/train.parquet

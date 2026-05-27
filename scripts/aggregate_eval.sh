@@ -12,7 +12,7 @@ GROUP_BY="${GROUP_BY:-dialect}"
 TARGET_DIR="${TARGET_DIR:-}"
 
 if [[ -n "${FILE}" ]]; then
-  python3 "${ROOT_DIR}/scripts/benchmark_aggregate.py" \
+  python3 "${ROOT_DIR}/scripts/_aggregate_metrics.py" \
     --file "${FILE}" \
     --group-by "${GROUP_BY}"
 elif [[ -n "${TARGET_DIR}" ]]; then
@@ -26,11 +26,11 @@ elif [[ -n "${TARGET_DIR}" ]]; then
     exit 1
   fi
   _files_csv="$(IFS=,; echo "${_jsonl_files[*]}")"
-  python3 "${ROOT_DIR}/scripts/benchmark_aggregate.py" \
+  python3 "${ROOT_DIR}/scripts/_aggregate_metrics.py" \
     --file "${_files_csv}" \
     --group-by "${GROUP_BY}"
 else
-  python3 "${ROOT_DIR}/scripts/benchmark_aggregate.py" \
+  python3 "${ROOT_DIR}/scripts/_aggregate_metrics.py" \
     --root "${OUT_ROOT}" \
     --dialects "${DIALECTS}" \
     --file-pattern "${FILE_PATTERN}" \

@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${ROOT_DIR}"
 
-: "${TRAIN_SCRIPT:=src/training/model_training/grpo/run_grpo.sh}"
+: "${TRAIN_SCRIPT:=diff_sql/training/grpo/run_grpo.sh}"
 : "${TRAIN_CONFIG:=configs/model_training/grpo.yaml}"
 : "${TRAIN_DATA:?Set TRAIN_DATA=/path/to/train.parquet for GRPO training.}"
 : "${TEST_DATA:=${TRAIN_DATA}}"

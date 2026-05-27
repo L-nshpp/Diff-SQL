@@ -3,7 +3,7 @@
 This directory contains the model-training entry points used by Diff-SQL.
 
 ```text
-src/training/model_training/
+diff_sql/training/
 ├── sft/
 │   └── run_sft.sh
 └── grpo/
@@ -22,14 +22,14 @@ bash scripts/run_train_grpo.sh
 The HuggingFace release contains SFT data:
 
 ```text
-data/patch-generator-training-dataset/train.parquet        # Patch Generator SFT
-data/constraint-aligner-training-dataset/train.parquet     # Constraint Aligner SFT warmup
+data/training/patch-generator/train.parquet       # Patch Generator SFT
+data/training/constraint-aligner/train.parquet    # Constraint Aligner SFT warmup
 ```
 
 Override paths on a training machine with environment variables:
 
 ```bash
-TRAIN_DATA=/path/to/constraint-aligner-training-dataset/train.parquet \
+TRAIN_DATA=data/training/constraint-aligner/train.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/constraint-aligner-sft \
 bash scripts/run_train_sft.sh

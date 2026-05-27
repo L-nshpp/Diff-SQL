@@ -14,7 +14,7 @@ import psycopg2
 import sqlparse
 
 WORKDIR = os.getenv("EVAL_WORKDIR", "/workspace")
-INPUT_DIR = os.getenv("EVAL_INPUT_DIR", os.path.join(WORKDIR, "benchmarks"))
+INPUT_DIR = os.getenv("EVAL_INPUT_DIR", os.path.join(WORKDIR, "data", "benchmark", "effi-sql"))
 INPUT_FILE = os.getenv("EVAL_INPUT_FILE", "").strip()
 OUTPUT_DIR = os.getenv("EVAL_OUTPUT_DIR", os.path.join(WORKDIR, "outputs"))
 FILTER_FILE = os.getenv("EVAL_FILTER_FILE", "")

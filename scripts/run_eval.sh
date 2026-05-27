@@ -10,9 +10,9 @@ cd "${ROOT_DIR}"
 : "${BENCHMARK_SCALE:=scale}"
 : "${EVAL_SQL_MODE:=patch}"
 : "${EVAL_RESPONSE_FIELD:=prediction}"
-: "${EVAL_INPUT_DIR:=/workspace/benchmarks}"
+: "${EVAL_INPUT_DIR:=/workspace/data/benchmark/effi-sql}"
 : "${EVAL_OUTPUT_DIR:=/workspace/outputs/${DIALECT}}"
 
 export DIALECT BENCHMARK_SCALE EVAL_SQL_MODE EVAL_RESPONSE_FIELD EVAL_INPUT_DIR EVAL_OUTPUT_DIR
 
-bash scripts/benchmark_eval.sh
+bash scripts/_eval_in_docker.sh

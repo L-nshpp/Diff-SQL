@@ -13,16 +13,16 @@ case "${BENCHMARK_SCALE}" in
   default|base|standard) BENCHMARK_SCALE="default" ;;
   scale|scaled) BENCHMARK_SCALE="scale" ;;
   *)
-    echo "[benchmark_down] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
+    echo "[db_down] Unsupported BENCHMARK_SCALE=${BENCHMARK_SCALE}. Use one of: default, scale"
     exit 1
     ;;
 esac
 
 POSTGRES_TPCH_SERVICE="tpch_postgresql_3g"
 
-compose_files=(-f docker-compose.smalldb.yml)
+compose_files=(-f docker/compose/smalldb.yml)
 if [[ "${SMALLDB_ONLY}" != "1" ]]; then
-  compose_files+=(-f docker-compose.tpch.yml)
+  compose_files+=(-f docker/compose/tpch.yml)
 fi
 
 services=()
@@ -35,7 +35,7 @@ case "${DIALECT}" in
     )
     ;;
   *)
-    echo "[benchmark_down] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
+    echo "[db_down] Unsupported DIALECT=${DIALECT}. Use one of: all, postgres"
     exit 1
     ;;
 esac
@@ -51,12 +51,12 @@ if [[ "${SMALLDB_ONLY}" == "1" && ${#services[@]} -gt 0 ]]; then
   services=("${filtered[@]}")
 fi
 
-echo "[benchmark_down] DIALECT=${DIALECT}"
-echo "[benchmark_down] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
-echo "[benchmark_down] Using compose files: ${compose_files[*]}"
+echo "[db_down] DIALECT=${DIALECT}"
+echo "[db_down] BENCHMARK_SCALE=${BENCHMARK_SCALE}"
+echo "[db_down] Using compose files: ${compose_files[*]}"
 
 if [[ ${#services[@]} -eq 0 ]]; then
-  echo "[benchmark_down] No service selected for DIALECT=${DIALECT}"
+  echo "[db_down] No service selected for DIALECT=${DIALECT}"
   exit 0
 fi
 volume_names=()
@@ -73,6 +73,6 @@ fi
 docker compose "${compose_files[@]}" stop "${services[@]}" || true
 docker compose "${compose_files[@]}" rm -f "${services[@]}" || true
 if [[ "${PURGE_VOLUMES}" == "1" && ${#volume_names[@]} -gt 0 ]]; then
-  echo "[benchmark_down] Removing volumes: ${volume_names[*]}"
+  echo "[db_down] Removing volumes: ${volume_names[*]}"
   docker volume rm -f "${volume_names[@]}" || true
 fi

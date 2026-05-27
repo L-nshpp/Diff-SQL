@@ -8,18 +8,17 @@ SO_evaluation/
 
 # Large local database assets are not tracked in Git.
 postgre_table_dumps/
-postgre_scale_table_dumps/*
-!postgre_scale_table_dumps/README.md
-tpch/raw_data/*
-!tpch/raw_data/README.md
+data/databases/bird-interact-scale/table-dumps/*
+!data/databases/bird-interact-scale/table-dumps/README.md
+data/databases/tpch-3g/raw/*
+!data/databases/tpch-3g/raw/README.md
 
 # Local model and training artifacts
 checkpoints/
 models/
 *.parquet
-data/patch-generator-training-dataset/*
-!data/patch-generator-training-dataset/README.md
-data/constraint-aligner-training-dataset/*
-!data/constraint-aligner-training-dataset/README.md
-data/effi-sql/*
-!data/effi-sql/README.md
+data/training/patch-generator/*
+!data/training/patch-generator/README.md
+data/training/constraint-aligner/*
+!data/training/constraint-aligner/README.md
+data/benchmark/effi-sql/benchmark.jsonl
