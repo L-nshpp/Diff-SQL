@@ -1,6 +1,6 @@
 # Diff-SQL
 
-Diff-SQL is the code release for PostgreSQL SQL efficiency optimization. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
+Diff-SQL is the code release for SQL efficiency optimization. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
 
 ```text
 https://huggingface.co/datasets/Lnsshp/Diff-SQL
@@ -34,8 +34,6 @@ This repository is organized for the benchmark-scale setting used in the paper: 
 ├── requirements.txt
 └── README.md
 ```
-
-Prompt construction, crawling, and intermediate data-generation scripts are intentionally not included in this release. Use the finalized HuggingFace training data for training.
 
 ## HuggingFace Assets
 
