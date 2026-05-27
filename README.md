@@ -37,32 +37,12 @@ This repository is organized for the benchmark-scale setting used in the paper: 
 
 ## HuggingFace Assets
 
-The HuggingFace dataset is structured as:
-
-```text
-data/
-  patch-generator-training-dataset/
-    train.parquet
-  constraint-aligner-training-dataset/
-    train.parquet
-  effi-sql/
-    benchmark.jsonl
-```
-
 Place or symlink those files into the repository paths below:
 
 ```text
 data/training/patch-generator/train.parquet
 data/training/constraint-aligner/train.parquet
 data/benchmark/effi-sql/benchmark.jsonl
-```
-
-Example:
-
-```bash
-ln -s /path/to/hf/data/patch-generator-training-dataset/train.parquet data/training/patch-generator/train.parquet
-ln -s /path/to/hf/data/constraint-aligner-training-dataset/train.parquet data/training/constraint-aligner/train.parquet
-ln -s /path/to/hf/data/effi-sql/benchmark.jsonl data/benchmark/effi-sql/benchmark.jsonl
 ```
 
 ## Database Assets
@@ -90,21 +70,7 @@ data/databases/tpch-3g/raw/
   lineitem.tbl
 ```
 
-To generate TPC-H 3G raw data, download the official TPC-H Tools package from:
-
-```text
-https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
-```
-
-After accepting the TPC license, unzip the tools package and build `dbgen`:
-
-```bash
-mkdir -p /path/to/diff-sql/data/databases/tpch-3g/raw
-cd /path/to/tpc-h-tools/dbgen
-make
-./dbgen -s 3 -f
-mv *.tbl /path/to/diff-sql/data/databases/tpch-3g/raw/
-```
+To generate TPC-H 3G raw data, download the official TPC-H Tools package.
 
 ## Installation
 
@@ -186,6 +152,7 @@ docker compose -f docker/compose/tpch.yml up -d tpch_postgresql_3g
 ```
 
 ## Training
+Training is based on verl.
 
 Run Patch Generator SFT:
 
@@ -204,32 +171,3 @@ bash scripts/run_train_sft.sh
 
 The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is Constraint Aligner SFT warmup data.
 
-Run GRPO training with your local training file:
-
-```bash
-TRAIN_DATA=/path/to/train.parquet \
-TEST_DATA=/path/to/val.parquet \
-MODEL_PATH=/path/to/base-model \
-OUTPUT_DIR=checkpoints/grpo \
-bash scripts/run_train_grpo.sh
-```
-
-## Benchmark Files
-
-- `data/benchmark/effi-sql/eff-sql-pg.jsonl`: PostgreSQL benchmark examples used by the default evaluation command.
-- `data/benchmark/effi-sql/eff-sql-pg-with-difficulty-level.jsonl`: the same benchmark with difficulty labels.
-- `data/benchmark/effi-sql/benchmark.jsonl`: optional symlink/copy of the HuggingFace benchmark file.
-
-Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_time`, `base_explain_analyze`, and `optimized_explain_analyze`.
-
-## Notes
-
-- This release is PostgreSQL benchmark-scale only.
-- Training parquet files are ignored by Git because they are HuggingFace assets.
-- Prepare the PostgreSQL scale BIRD-Interact databases and TPC-H 3G raw `.tbl` files locally; the PostgreSQL schema/import scripts stay in this repository.
-- If Docker volumes were created with older assets, recreate them with:
-
-```bash
-PURGE_VOLUMES=1 bash scripts/db_down.sh
-bash scripts/db_up.sh
-```
