@@ -13,6 +13,6 @@ Expected files:
 3g/lineitem.tbl
 ```
 
-These files are not included in the HuggingFace dataset release. Generate them with the official TPC-H `dbgen` tool according to the TPC-H terms.
+Generate these files with the official TPC-H `dbgen` tool according to the TPC-H terms.
 
 The GitHub repository keeps the PostgreSQL schema and import scripts under `tpch/dialects/postgresql/`; only the raw `.tbl` data files are external.

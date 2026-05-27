@@ -66,11 +66,9 @@ ln -s /path/to/hf/data/constraint-aligner-training-dataset ./data/constraint-ali
 ln -s /path/to/hf/data/effi-sql ./data/effi-sql
 ```
 
-The HuggingFace dataset does not include database dumps. Prepare the evaluation databases locally before running execution-based evaluation.
-
 ## Database Assets
 
-Place the local PostgreSQL benchmark-scale BIRD-Interact dumps here:
+Prepare the PostgreSQL scale BIRD-Interact databases locally and place the table dumps here:
 
 ```text
 postgre_scale_table_dumps/
@@ -205,23 +203,20 @@ To run Constraint Aligner SFT warmup, use the same SFT entry point with the cons
 
 ```bash
 TRAIN_DATA=data/constraint-aligner-training-dataset/train.parquet \
-DEV_DATA=data/constraint-aligner-training-dataset/train.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/constraint-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
-The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is SFT warmup data, not GRPO data. GRPO uses examples selected after warmup from cases that still fail execution or semantic-equivalence checks. That GRPO parquet is not included in this HuggingFace release. If you have constructed it locally, run:
+The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is Constraint Aligner SFT warmup data.
 
 ```bash
-TRAIN_DATA=/path/to/grpo_train.parquet \
-TEST_DATA=/path/to/grpo_val.parquet \
+TRAIN_DATA=/path/to/train.parquet \
+TEST_DATA=/path/to/val.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/grpo \
 bash scripts/run_train_grpo.sh
 ```
-
-The HuggingFace release provides one `train.parquet` file for each SFT stage. The wrappers use the training file as verl's validation file by default unless `DEV_DATA` is set.
 
 ## Benchmark Files
 
@@ -234,7 +229,7 @@ Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_
 
 - This release is PostgreSQL benchmark-scale only.
 - Training parquet files are ignored by Git because they are HuggingFace assets.
-- Database dumps and TPC-H raw `.tbl` files are not included in the HuggingFace dataset. Prepare them locally; the PostgreSQL schema/import scripts stay in this repository.
+- Prepare the PostgreSQL scale BIRD-Interact databases and TPC-H 3G raw `.tbl` files locally; the PostgreSQL schema/import scripts stay in this repository.
 - If Docker volumes were created with older assets, recreate them with:
 
 ```bash

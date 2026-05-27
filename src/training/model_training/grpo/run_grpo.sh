@@ -4,7 +4,7 @@ set -x
 
 nproc_per_node="${NPROC_PER_NODE:-4}"
 
-: "${TRAIN_DATA:?Set TRAIN_DATA=/path/to/grpo_train.parquet. The HuggingFace constraint-aligner dataset is SFT warmup data, not GRPO data.}"
+: "${TRAIN_DATA:?Set TRAIN_DATA=/path/to/train.parquet for GRPO training.}"
 : "${TEST_DATA:=${TRAIN_DATA}}"
 : "${MODEL_PATH:=checkpoints/sft/models}"
 : "${OUTPUT_DIR:=checkpoints/grpo}"
