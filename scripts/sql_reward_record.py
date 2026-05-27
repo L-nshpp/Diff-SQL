@@ -9,9 +9,6 @@ import traceback
 import os
 from datetime import datetime
 
-# ==============================================================================
-# 0. 📝 全局日志配置
-# ==============================================================================
 EXECUTION_LOG_FILE = os.environ.get(
     "SQL_REWARD_LOG_FILE",
     "logs/sql_execution_pg_details.jsonl",
@@ -26,9 +23,7 @@ def log_execution_detail(info_dict):
     except Exception as e:
         print(f"Write Log Error: {e}")
 
-# ==============================================================================
-# 1. 🌍 全局数据库配置（PostgreSQL）
-# ==============================================================================
+
 PG_CONFIG = {
     "user": os.environ.get("PGUSER", os.environ.get("POSTGRES_USER", "postgres")),
     "password": os.environ.get("PGPASSWORD", os.environ.get("POSTGRES_PASSWORD", "123456")),
@@ -37,11 +32,7 @@ PG_CONFIG = {
 }
 
 def normalize_db_key(db_key: str) -> str:
-    """
-    统一 db key 逻辑：
-    - tpch / TPCH / tpch_01g / unknown 都归到 tpch
-    - 其他按原名走
-    """
+
     if not db_key:
         return "tpch"
 
@@ -59,9 +50,6 @@ DB_CONFIGS = {
     "tpch":                   (PG_CONFIG, os.environ.get("PG_DB_TPCH", "tpch_01g")),
 }
 
-# ==============================================================================
-# 2. 🛠️ 核心工具函数
-# ==============================================================================
 def get_db_cursor(db_key):
     normalized_key = normalize_db_key(db_key)
     target_key = normalized_key if normalized_key in DB_CONFIGS else "tpch"
@@ -134,13 +122,7 @@ def extract_patch_from_response(response_str):
     return None
 
 def patch_has_effective_edit(patch_text: str) -> bool:
-    """
-    判断 patch 是否包含真正的编辑内容，而不是空 patch / 只有 header / 只有注释。
-    规则：
-    - 忽略空行
-    - 忽略 --- / +++ / @@ 这些 diff header
-    - 只有以 '+' 或 '-' 开头，且不是 header 的行，才算有效编辑
-    """
+
     if patch_text is None:
         return False
 
@@ -190,13 +172,7 @@ def execute_sql_bounded(cursor, sql, time_limit_ms):
         return None, 0, None, str(e)
 
 def normalize_sql(s: str) -> str:
-    """
-    标准化 SQL：用于检测是否回退 / no-op
-    - 去掉单行注释
-    - 去掉多余空格
-    - 去掉末尾分号
-    - 转小写
-    """
+
     if not s:
         return ""
 
@@ -206,9 +182,6 @@ def normalize_sql(s: str) -> str:
 
     return s.lower().strip()
 
-# ==============================================================================
-# 3. 🎯 Reward Function (Audit & Fix 专用版)
-# ==============================================================================
 def sql_optimize(data_source, solution_str, ground_truth, extra_info=None):
     log_info = {
         "status": "init",
@@ -219,7 +192,6 @@ def sql_optimize(data_source, solution_str, ground_truth, extra_info=None):
         "base_sql": ground_truth.get("base_sql", "") if ground_truth else "",
     }
 
-    # 1. 解析 Ground Truth
     if not ground_truth:
         log_info["status"] = "missing_gt"
         log_execution_detail(log_info)
@@ -235,7 +207,6 @@ def sql_optimize(data_source, solution_str, ground_truth, extra_info=None):
         log_execution_detail(log_info)
         return 0.0
 
-    # 2. 解析 Patch
     patch_content = extract_patch_from_response(solution_str)
 
     if patch_content is None:
@@ -260,7 +231,6 @@ def sql_optimize(data_source, solution_str, ground_truth, extra_info=None):
         log_execution_detail(log_info)
         return -1.0
 
-    # 2.5 提前拦截 no-op / rollback（例如只多了一个 ';'）
     normalized_base_sql = normalize_sql(base_sql)
     normalized_pred_sql = normalize_sql(pred_sql)
 
@@ -271,7 +241,6 @@ def sql_optimize(data_source, solution_str, ground_truth, extra_info=None):
         log_execution_detail(log_info)
         return -0.1
 
-    # 3. 连接数据库
     conn, cursor, conn_err = get_db_cursor(db_key)
     if conn_err:
         log_info["status"] = "db_connect_failed"
