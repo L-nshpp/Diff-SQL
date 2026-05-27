@@ -1,6 +1,6 @@
 # Diff-SQL
 
-Diff-SQL is the code release for PostgreSQL SQL efficiency optimization. This repository keeps the runnable code, benchmark files, and Docker setup lightweight; large database assets and finalized training data are released separately on HuggingFace:
+Diff-SQL is the code release for SQL efficiency optimization. This repository keeps the runnable code, benchmark files, and Docker setup lightweight; large database assets and finalized training data are released separately on HuggingFace:
 
 ```text
 https://huggingface.co/datasets/Lnsshp/Diff-SQL
