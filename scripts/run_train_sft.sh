@@ -8,8 +8,8 @@ cd "${ROOT_DIR}"
 
 : "${TRAIN_SCRIPT:=src/training/model_training/sft/run_sft.sh}"
 : "${TRAIN_CONFIG:=configs/model_training/sft.yaml}"
-: "${TRAIN_DATA:=data/train_dataset/train_sft.parquet}"
-: "${DEV_DATA:=data/train_dataset/test_sft.parquet}"
+: "${TRAIN_DATA:=data/patch-generator-training-dataset/train.parquet}"
+: "${DEV_DATA:=${TRAIN_DATA}}"
 : "${OUTPUT_DIR:=checkpoints/sft}"
 
 if [[ ! -f "${TRAIN_SCRIPT}" ]]; then

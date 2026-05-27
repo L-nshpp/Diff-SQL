@@ -6,7 +6,7 @@ __pycache__/
 outputs/
 SO_evaluation/
 
-# Large database assets are released via HuggingFace.
+# Large local database assets are not tracked in Git.
 postgre_table_dumps/
 postgre_scale_table_dumps/*
 !postgre_scale_table_dumps/README.md
@@ -17,5 +17,9 @@ tpch/raw_data/*
 checkpoints/
 models/
 *.parquet
-data/train_dataset/*
-!data/train_dataset/README.md
+data/patch-generator-training-dataset/*
+!data/patch-generator-training-dataset/README.md
+data/constraint-aligner-training-dataset/*
+!data/constraint-aligner-training-dataset/README.md
+data/effi-sql/*
+!data/effi-sql/README.md

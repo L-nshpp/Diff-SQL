@@ -19,30 +19,34 @@ bash scripts/run_train_sft.sh
 bash scripts/run_train_grpo.sh
 ```
 
-The public release expects the finalized training parquet files from the HuggingFace dataset release:
+The HuggingFace release contains SFT data:
 
 ```text
-data/train_dataset/train_sft.parquet
-data/train_dataset/test_sft.parquet
-data/train_dataset/train_grpo.parquet
-data/train_dataset/test_grpo.parquet
+data/patch-generator-training-dataset/train.parquet        # Patch Generator SFT
+data/constraint-aligner-training-dataset/train.parquet     # Constraint Aligner SFT warmup
 ```
 
 Override paths on a training machine with environment variables:
 
 ```bash
-TRAIN_DATA=/path/to/train_sft.parquet \
-DEV_DATA=/path/to/test_sft.parquet \
+TRAIN_DATA=/path/to/constraint-aligner-training-dataset/train.parquet \
+DEV_DATA=/path/to/constraint-aligner-training-dataset/train.parquet \
 MODEL_PATH=/path/to/base-model \
-OUTPUT_DIR=checkpoints/sft \
+OUTPUT_DIR=checkpoints/constraint-aligner-sft \
 bash scripts/run_train_sft.sh
+```
 
-TRAIN_DATA=/path/to/train_grpo.parquet \
-TEST_DATA=/path/to/test_grpo.parquet \
+The constraint-aligner parquet is warmup SFT data, not GRPO data. GRPO data is selected later from cases that still fail after warmup and is not included in the HuggingFace release. If you have constructed it locally:
+
+```bash
+TRAIN_DATA=/path/to/grpo_train.parquet \
+TEST_DATA=/path/to/grpo_val.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/grpo \
 bash scripts/run_train_grpo.sh
 ```
+
+Set `TRAIN_DATA` and optionally `TEST_DATA` to the local GRPO parquet before running `scripts/run_train_grpo.sh`.
 
 Optional GRPO resume controls:
 

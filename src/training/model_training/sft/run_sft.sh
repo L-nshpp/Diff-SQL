@@ -4,8 +4,8 @@ set -x
 
 nproc_per_node="${NPROC_PER_NODE:-8}"
 
-: "${TRAIN_DATA:=data/train_dataset/train_sft.parquet}"
-: "${DEV_DATA:=data/train_dataset/test_sft.parquet}"
+: "${TRAIN_DATA:=data/patch-generator-training-dataset/train.parquet}"
+: "${DEV_DATA:=${TRAIN_DATA}}"
 : "${MODEL_PATH:=models/base-model}"
 : "${MODEL_NAME:=base-model}"
 : "${OUTPUT_DIR:=checkpoints/sft}"

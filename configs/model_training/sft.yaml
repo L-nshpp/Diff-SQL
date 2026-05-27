@@ -5,8 +5,8 @@ entrypoint: src/training/model_training/sft/run_sft.sh
 paths:
   model_path: ${MODEL_PATH:-models/base-model}
   model_name: ${MODEL_NAME:-base-model}
-  train_data: ${TRAIN_DATA:-data/train_dataset/train_sft.parquet}
-  dev_data: ${DEV_DATA:-data/train_dataset/test_sft.parquet}
+  train_data: ${TRAIN_DATA:-data/patch-generator-training-dataset/train.parquet}
+  dev_data: ${DEV_DATA:-data/patch-generator-training-dataset/train.parquet}
   output_dir: ${OUTPUT_DIR:-checkpoints/sft}
 
 distributed:

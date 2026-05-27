@@ -13,10 +13,6 @@ Expected files:
 3g/lineitem.tbl
 ```
 
-These files are large and should be downloaded from the HuggingFace dataset release or generated according to the TPC-H terms:
-
-```text
-https://huggingface.co/datasets/Lnsshp/Diff-SQL
-```
+These files are not included in the HuggingFace dataset release. Generate them with the official TPC-H `dbgen` tool according to the TPC-H terms.
 
 The GitHub repository keeps the PostgreSQL schema and import scripts under `tpch/dialects/postgresql/`; only the raw `.tbl` data files are external.

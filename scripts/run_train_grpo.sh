@@ -8,8 +8,8 @@ cd "${ROOT_DIR}"
 
 : "${TRAIN_SCRIPT:=src/training/model_training/grpo/run_grpo.sh}"
 : "${TRAIN_CONFIG:=configs/model_training/grpo.yaml}"
-: "${TRAIN_DATA:=data/train_dataset/train_grpo.parquet}"
-: "${TEST_DATA:=data/train_dataset/test_grpo.parquet}"
+: "${TRAIN_DATA:?Set TRAIN_DATA=/path/to/grpo_train.parquet. The HuggingFace constraint-aligner dataset is SFT warmup data, not GRPO data.}"
+: "${TEST_DATA:=${TRAIN_DATA}}"
 : "${OUTPUT_DIR:=checkpoints/grpo}"
 : "${REWARD_FILE:=scripts/sql_reward_record.py}"
 

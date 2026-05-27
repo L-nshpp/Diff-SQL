@@ -6,10 +6,10 @@ paths:
   benchmark_file: benchmarks/eff-sql-pg.jsonl
   postgresql_scale_dumps: postgre_scale_table_dumps
   tpch_raw_data_3g: tpch/raw_data/3g
-  train_sft: data/train_dataset/train_sft.parquet
-  dev_sft: data/train_dataset/test_sft.parquet
-  train_grpo: data/train_dataset/train_grpo.parquet
-  dev_grpo: data/train_dataset/test_grpo.parquet
+  patch_generator_train: data/patch-generator-training-dataset/train.parquet
+  constraint_aligner_sft_warmup_train: data/constraint-aligner-training-dataset/train.parquet
+  grpo_train: null
+  hf_benchmark_file: data/effi-sql/benchmark.jsonl
 
 training:
   sft_config: configs/model_training/sft.yaml

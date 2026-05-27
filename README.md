@@ -1,6 +1,6 @@
 # Diff-SQL
 
-Diff-SQL is the code release for SQL efficiency optimization. This repository keeps the runnable code, benchmark files, and Docker setup lightweight; large database assets and finalized training data are released separately on HuggingFace:
+Diff-SQL is the code release for PostgreSQL SQL efficiency optimization. This repository keeps the runnable code and Docker setup lightweight. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
 
 ```text
 https://huggingface.co/datasets/Lnsshp/Diff-SQL
@@ -8,10 +8,10 @@ https://huggingface.co/datasets/Lnsshp/Diff-SQL
 
 The public package is organized for the benchmark-scale setting used in the paper:
 
-- BIRD-Interact-style PostgreSQL scale databases.
+- BIRD-Interact-style PostgreSQL scale databases prepared locally.
 - TPC-H PostgreSQL 3G.
 - Patch-style and end-to-end SQL evaluation.
-- SFT and GRPO model training from finalized parquet files.
+- SFT warmup and GRPO training entry points.
 
 ## Repository Layout
 
@@ -23,8 +23,11 @@ The public package is organized for the benchmark-scale setting used in the pape
 │   ├── tpch_mapping.json           # PostgreSQL TPC-H 3G mapping
 │   ├── eval.yaml
 │   └── model_training/             # SFT/GRPO training configs
-├── data/train_dataset/             # HuggingFace training-data placeholder
-├── postgre_scale_table_dumps/      # HuggingFace PostgreSQL scale DB placeholder
+├── data/                           # HuggingFace training/benchmark placeholders
+│   ├── patch-generator-training-dataset/
+│   ├── constraint-aligner-training-dataset/
+│   └── effi-sql/
+├── postgre_scale_table_dumps/      # local PostgreSQL scale DB placeholder
 ├── scripts/
 │   ├── benchmark_up.sh             # start PostgreSQL benchmark DBs
 │   ├── benchmark_eval.sh           # run eval inside Docker
@@ -36,7 +39,7 @@ The public package is organized for the benchmark-scale setting used in the pape
 ├── src/
 │   ├── evaluation/                 # PostgreSQL evaluator
 │   └── training/model_training/    # SFT/GRPO training code
-└── tpch/raw_data/                  # HuggingFace TPC-H 3G placeholder
+└── tpch/raw_data/                  # local/generated TPC-H 3G placeholder
 ```
 
 Prompt construction, crawling, and intermediate data-generation scripts are intentionally not included in this release. Use the finalized HuggingFace training data for training.
@@ -46,11 +49,39 @@ Prompt construction, crawling, and intermediate data-generation scripts are inte
 Download the HuggingFace dataset from `https://huggingface.co/datasets/Lnsshp/Diff-SQL` and place or symlink the assets into these paths:
 
 ```text
+data/
+  patch-generator-training-dataset/
+    train.parquet                  # Patch Generator SFT
+  constraint-aligner-training-dataset/
+    train.parquet                  # Constraint Aligner SFT warmup
+  effi-sql/
+    benchmark.jsonl
+```
+
+Example symlinks:
+
+```bash
+ln -s /path/to/hf/data/patch-generator-training-dataset ./data/patch-generator-training-dataset
+ln -s /path/to/hf/data/constraint-aligner-training-dataset ./data/constraint-aligner-training-dataset
+ln -s /path/to/hf/data/effi-sql ./data/effi-sql
+```
+
+The HuggingFace dataset does not include database dumps. Prepare the evaluation databases locally before running execution-based evaluation.
+
+## Database Assets
+
+Place the local PostgreSQL benchmark-scale BIRD-Interact dumps here:
+
+```text
 postgre_scale_table_dumps/
   polar_equipment_template/
   robot_fault_prediction_template/
   solar_panel_template/
+```
 
+Place or generate TPC-H 3G raw data here:
+
+```text
 tpch/raw_data/3g/
   region.tbl
   nation.tbl
@@ -60,20 +91,6 @@ tpch/raw_data/3g/
   partsupp.tbl
   orders.tbl
   lineitem.tbl
-
-data/train_dataset/
-  train_sft.parquet
-  test_sft.parquet
-  train_grpo.parquet
-  test_grpo.parquet
-```
-
-Example symlinks:
-
-```bash
-ln -s /path/to/hf/postgre_scale_table_dumps ./postgre_scale_table_dumps
-ln -s /path/to/hf/tpch/raw_data ./tpch/raw_data
-ln -s /path/to/hf/train_dataset ./data/train_dataset
 ```
 
 If you prefer to generate the TPC-H 3G raw data locally, download the official TPC-H Tools package from the TPC current specifications page:
@@ -134,7 +151,7 @@ docker compose -f docker-compose.tpch.yml down -v
 docker compose -f docker-compose.tpch.yml up -d tpch_postgresql_3g
 ```
 
-Run patch-style evaluation on `benchmarks/eff-sql-pg.jsonl`:
+Run patch-style evaluation on the bundled benchmark copy, `benchmarks/eff-sql-pg.jsonl`:
 
 ```bash
 EVAL_SQL_MODE=patch \
@@ -166,34 +183,49 @@ bash scripts/benchmark_down.sh
 
 By default, evaluation uses PostgreSQL scale databases and TPC-H 3G. Outputs are written to `outputs/postgres/`.
 
-## Training
-
-After placing the HuggingFace parquet files under `data/train_dataset/`, run:
+To evaluate the HuggingFace benchmark file directly, use:
 
 ```bash
-bash scripts/run_train_sft.sh
-bash scripts/run_train_grpo.sh
+EVAL_SQL_MODE=patch \
+EVAL_RESPONSE_FIELD=prediction \
+EVAL_INPUT_DIR=/workspace/data/effi-sql \
+EVAL_INPUT_FILE=benchmark.jsonl \
+bash scripts/run_eval.sh
 ```
 
-Common overrides:
+## Training
+
+After placing the HuggingFace parquet files under `data/`, run Patch Generator SFT:
 
 ```bash
-TRAIN_DATA=/path/to/train_sft.parquet \
-DEV_DATA=/path/to/test_sft.parquet \
-MODEL_PATH=/path/to/base-model \
-OUTPUT_DIR=checkpoints/sft \
 bash scripts/run_train_sft.sh
+```
 
-TRAIN_DATA=/path/to/train_grpo.parquet \
-TEST_DATA=/path/to/test_grpo.parquet \
+To run Constraint Aligner SFT warmup, use the same SFT entry point with the constraint-aligner warmup data:
+
+```bash
+TRAIN_DATA=data/constraint-aligner-training-dataset/train.parquet \
+DEV_DATA=data/constraint-aligner-training-dataset/train.parquet \
+MODEL_PATH=/path/to/base-model \
+OUTPUT_DIR=checkpoints/constraint-aligner-sft \
+bash scripts/run_train_sft.sh
+```
+
+The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is SFT warmup data, not GRPO data. GRPO uses examples selected after warmup from cases that still fail execution or semantic-equivalence checks. That GRPO parquet is not included in this HuggingFace release. If you have constructed it locally, run:
+
+```bash
+TRAIN_DATA=/path/to/grpo_train.parquet \
+TEST_DATA=/path/to/grpo_val.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/grpo \
 bash scripts/run_train_grpo.sh
 ```
 
+The HuggingFace release provides one `train.parquet` file for each SFT stage. The wrappers use the training file as verl's validation file by default unless `DEV_DATA` is set.
+
 ## Benchmark Files
 
-- `benchmarks/eff-sql-pg.jsonl`: PostgreSQL benchmark examples.
+- `benchmarks/eff-sql-pg.jsonl`: PostgreSQL benchmark examples. The HuggingFace copy is `data/effi-sql/benchmark.jsonl`.
 - `benchmarks/eff-sql-pg-with-difficulty-level.jsonl`: the same benchmark with difficulty labels.
 
 Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_time`, `base_explain_analyze`, and `optimized_explain_analyze`.
@@ -201,8 +233,8 @@ Core fields include `id`, `db`, `base_sql`, `optimized_sql`, `base_time`, `fast_
 ## Notes
 
 - This release is PostgreSQL benchmark-scale only.
-- Database dumps and training parquet files are ignored by Git because they are HuggingFace assets.
-- TPC-H raw `.tbl` files live on HuggingFace; the PostgreSQL schema/import scripts stay in this repository.
+- Training parquet files are ignored by Git because they are HuggingFace assets.
+- Database dumps and TPC-H raw `.tbl` files are not included in the HuggingFace dataset. Prepare them locally; the PostgreSQL schema/import scripts stay in this repository.
 - If Docker volumes were created with older assets, recreate them with:
 
 ```bash

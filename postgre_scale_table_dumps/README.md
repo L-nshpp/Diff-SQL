@@ -1,4 +1,4 @@
-Place the PostgreSQL benchmark-scale BIRD-Interact dumps here.
+Place the local PostgreSQL benchmark-scale BIRD-Interact dumps here.
 
 Expected subdirectories:
 
@@ -8,8 +8,4 @@ robot_fault_prediction_template/
 solar_panel_template/
 ```
 
-These files are large and should be downloaded from the HuggingFace dataset release, not committed to GitHub:
-
-```text
-https://huggingface.co/datasets/Lnsshp/Diff-SQL
-```
+These database dumps are not included in the HuggingFace dataset release. They are ignored by Git and should be prepared locally before running evaluation.

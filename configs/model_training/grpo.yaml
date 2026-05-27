@@ -4,8 +4,8 @@ entrypoint: src/training/model_training/grpo/run_grpo.sh
 
 paths:
   model_path: ${MODEL_PATH:-checkpoints/sft/models}
-  train_data: ${TRAIN_DATA:-data/train_dataset/train_grpo.parquet}
-  test_data: ${TEST_DATA:-data/train_dataset/test_grpo.parquet}
+  train_data: ${TRAIN_DATA}
+  test_data: ${TEST_DATA:-${TRAIN_DATA}}
   output_dir: ${OUTPUT_DIR:-checkpoints/grpo}
   reward_file: ${REWARD_FILE:-scripts/sql_reward_record.py}
 
