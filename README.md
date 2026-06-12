@@ -42,17 +42,17 @@ The Diff-SQL training dataset is released at `birdsql/Diff-SQL`:
 
 ```text
 patch-generator-training-dataset/
-  train.parquet    # 3472 examples
-  dev.parquet      # 388 examples
+  train.parquet
+  dev.parquet
 constraint-aligner-training-dataset/
-  train.parquet    # 1554 examples
-  dev.parquet      # 173 examples
+  train.parquet
+  dev.parquet
 ```
 
 The Effi-SQL benchmark is released at `birdsql/Effi-SQL`:
 
 ```text
-effi-sql-pg.jsonl  # 300 PostgreSQL benchmark examples
+effi-sql-pg.jsonl
 ```
 
 Place or symlink those files into the repository paths below:
