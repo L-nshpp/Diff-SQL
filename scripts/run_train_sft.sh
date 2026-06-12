@@ -9,7 +9,7 @@ cd "${ROOT_DIR}"
 : "${TRAIN_SCRIPT:=diff_sql/training/sft/run_sft.sh}"
 : "${TRAIN_CONFIG:=configs/model_training/sft.yaml}"
 : "${TRAIN_DATA:=data/training/patch-generator/train.parquet}"
-: "${DEV_DATA:=${TRAIN_DATA}}"
+: "${DEV_DATA:=data/training/patch-generator/dev.parquet}"
 : "${OUTPUT_DIR:=checkpoints/sft}"
 
 if [[ ! -f "${TRAIN_SCRIPT}" ]]; then

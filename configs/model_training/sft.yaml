@@ -6,7 +6,7 @@ paths:
   model_path: ${MODEL_PATH:-models/base-model}
   model_name: ${MODEL_NAME:-base-model}
   train_data: ${TRAIN_DATA:-data/training/patch-generator/train.parquet}
-  dev_data: ${DEV_DATA:-data/training/patch-generator/train.parquet}
+  dev_data: ${DEV_DATA:-data/training/patch-generator/dev.parquet}
   output_dir: ${OUTPUT_DIR:-checkpoints/sft}
 
 distributed:

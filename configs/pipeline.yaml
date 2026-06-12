@@ -7,9 +7,11 @@ paths:
   postgresql_scale_dumps: data/databases/bird-interact-scale/table-dumps
   tpch_raw_data_3g: data/databases/tpch-3g/raw
   patch_generator_train: data/training/patch-generator/train.parquet
+  patch_generator_dev: data/training/patch-generator/dev.parquet
   constraint_aligner_sft_warmup_train: data/training/constraint-aligner/train.parquet
+  constraint_aligner_sft_warmup_dev: data/training/constraint-aligner/dev.parquet
   grpo_train: null
-  hf_benchmark_file: data/benchmark/effi-sql/benchmark.jsonl
+  hf_benchmark_file: data/benchmark/effi-sql/effi-sql-pg.jsonl
 
 training:
   sft_config: configs/model_training/sft.yaml

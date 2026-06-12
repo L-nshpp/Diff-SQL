@@ -22,3 +22,4 @@ data/training/patch-generator/*
 data/training/constraint-aligner/*
 !data/training/constraint-aligner/README.md
 data/benchmark/effi-sql/benchmark.jsonl
+data/benchmark/effi-sql/effi-sql-pg.jsonl

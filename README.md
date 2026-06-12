@@ -3,7 +3,8 @@
 Diff-SQL is the code release for SQL efficiency optimization. The finalized training datasets and Effi-SQL benchmark file are released on HuggingFace:
 
 ```text
-https://huggingface.co/datasets/Lnsshp/Diff-SQL
+Training data: https://huggingface.co/datasets/birdsql/Diff-SQL
+Benchmark:     https://huggingface.co/datasets/birdsql/Effi-SQL
 ```
 
 This repository is organized for the benchmark-scale setting used in the paper: scale BIRD-Interact PostgreSQL databases, TPC-H PostgreSQL 3G, patch-style/end-to-end SQL evaluation, and verl-based SFT/GRPO training.
@@ -37,12 +38,41 @@ This repository is organized for the benchmark-scale setting used in the paper: 
 
 ## HuggingFace Assets
 
+The Diff-SQL training dataset is released at `birdsql/Diff-SQL`:
+
+```text
+patch-generator-training-dataset/
+  train.parquet    # 3472 examples
+  dev.parquet      # 388 examples
+constraint-aligner-training-dataset/
+  train.parquet    # 1554 examples
+  dev.parquet      # 173 examples
+```
+
+The Effi-SQL benchmark is released at `birdsql/Effi-SQL`:
+
+```text
+effi-sql-pg.jsonl  # 300 PostgreSQL benchmark examples
+```
+
 Place or symlink those files into the repository paths below:
 
 ```text
 data/training/patch-generator/train.parquet
+data/training/patch-generator/dev.parquet
 data/training/constraint-aligner/train.parquet
-data/benchmark/effi-sql/benchmark.jsonl
+data/training/constraint-aligner/dev.parquet
+data/benchmark/effi-sql/effi-sql-pg.jsonl
+```
+
+Example:
+
+```bash
+ln -s /path/to/Diff-SQL/patch-generator-training-dataset/train.parquet data/training/patch-generator/train.parquet
+ln -s /path/to/Diff-SQL/patch-generator-training-dataset/dev.parquet data/training/patch-generator/dev.parquet
+ln -s /path/to/Diff-SQL/constraint-aligner-training-dataset/train.parquet data/training/constraint-aligner/train.parquet
+ln -s /path/to/Diff-SQL/constraint-aligner-training-dataset/dev.parquet data/training/constraint-aligner/dev.parquet
+ln -s /path/to/Effi-SQL/effi-sql-pg.jsonl data/benchmark/effi-sql/effi-sql-pg.jsonl
 ```
 
 ## Database Assets
@@ -127,7 +157,7 @@ To evaluate the HuggingFace benchmark file:
 ```bash
 EVAL_SQL_MODE=patch \
 EVAL_RESPONSE_FIELD=prediction \
-EVAL_INPUT_FILE=benchmark.jsonl \
+EVAL_INPUT_FILE=effi-sql-pg.jsonl \
 bash scripts/run_eval.sh
 ```
 
@@ -164,10 +194,10 @@ Run Constraint Aligner SFT warmup:
 
 ```bash
 TRAIN_DATA=data/training/constraint-aligner/train.parquet \
+DEV_DATA=data/training/constraint-aligner/dev.parquet \
 MODEL_PATH=/path/to/base-model \
 OUTPUT_DIR=checkpoints/constraint-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
-The HuggingFace `constraint-aligner-training-dataset/train.parquet` file is Constraint Aligner SFT warmup data.
-
+The HuggingFace `constraint-aligner-training-dataset` files are Constraint Aligner SFT warmup data.

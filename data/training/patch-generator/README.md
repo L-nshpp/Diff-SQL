@@ -3,17 +3,19 @@
 Download the Diff-SQL HuggingFace dataset:
 
 ```text
-https://huggingface.co/datasets/Lnsshp/Diff-SQL
+https://huggingface.co/datasets/birdsql/Diff-SQL
 ```
 
-Place the patch-generator training parquet here:
+Place the patch-generator training parquet files here:
 
 ```text
 train.parquet
+dev.parquet
 ```
 
 Source path in the HuggingFace dataset:
 
 ```text
-data/patch-generator-training-dataset/train.parquet
+patch-generator-training-dataset/train.parquet
+patch-generator-training-dataset/dev.parquet
 ```

@@ -3,19 +3,21 @@
 Download the Diff-SQL HuggingFace dataset:
 
 ```text
-https://huggingface.co/datasets/Lnsshp/Diff-SQL
+https://huggingface.co/datasets/birdsql/Diff-SQL
 ```
 
-Place the constraint-aligner SFT warmup parquet here:
+Place the constraint-aligner SFT warmup parquet files here:
 
 ```text
 train.parquet
+dev.parquet
 ```
 
 Source path in the HuggingFace dataset:
 
 ```text
-data/constraint-aligner-training-dataset/train.parquet
+constraint-aligner-training-dataset/train.parquet
+constraint-aligner-training-dataset/dev.parquet
 ```
 
-This file is for supervised warmup of the Constraint Aligner.
+These files are for supervised warmup of the Constraint Aligner.
