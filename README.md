@@ -200,4 +200,4 @@ OUTPUT_DIR=checkpoints/correctness-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
-The HuggingFace `correctness-aligner-training-dataset` files are Constraint Aligner SFT warmup data.
+The HuggingFace `correctness-aligner-training-dataset` files are Correctness Aligner SFT warmup data.

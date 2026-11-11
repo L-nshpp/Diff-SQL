@@ -24,21 +24,21 @@ The HuggingFace release contains SFT data:
 ```text
 data/training/patch-generator/train.parquet          # Patch Generator SFT train split
 data/training/patch-generator/dev.parquet            # Patch Generator SFT dev split
-data/training/constraint-aligner/train.parquet       # Constraint Aligner SFT warmup train split
-data/training/constraint-aligner/dev.parquet         # Constraint Aligner SFT warmup dev split
+data/training/correctness-aligner/train.parquet       # Correctness Aligner SFT warmup train split
+data/training/correctness-aligner/dev.parquet         # Correctness Aligner SFT warmup dev split
 ```
 
 Override paths on a training machine with environment variables:
 
 ```bash
-TRAIN_DATA=data/training/constraint-aligner/train.parquet \
-DEV_DATA=data/training/constraint-aligner/dev.parquet \
+TRAIN_DATA=data/training/correctness-aligner/train.parquet \
+DEV_DATA=data/training/correctness-aligner/dev.parquet \
 MODEL_PATH=/path/to/base-model \
-OUTPUT_DIR=checkpoints/constraint-aligner-sft \
+OUTPUT_DIR=checkpoints/correctness-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
-The constraint-aligner parquet files are Constraint Aligner SFT warmup data.
+The correctness-aligner parquet files are Correctness Aligner SFT warmup data.
 
 ```bash
 TRAIN_DATA=/path/to/train.parquet \

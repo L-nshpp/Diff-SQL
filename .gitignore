@@ -19,7 +19,7 @@ models/
 *.parquet
 data/training/patch-generator/*
 !data/training/patch-generator/README.md
-data/training/constraint-aligner/*
-!data/training/constraint-aligner/README.md
+data/training/correctness-aligner/*
+!data/training/correctness-aligner/README.md
 data/benchmark/effi-sql/benchmark.jsonl
 data/benchmark/effi-sql/effi-sql-pg.jsonl
