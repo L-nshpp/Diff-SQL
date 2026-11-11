@@ -17,7 +17,7 @@ This repository is organized for the benchmark-scale setting used in the paper: 
 │   ├── benchmark/effi-sql/         # Effi-SQL benchmark files
 │   ├── training/                   # HuggingFace training data placeholders
 │   │   ├── patch-generator/
-│   │   └── constraint-aligner/
+│   │   └── correctness-aligner/
 │   └── databases/                  # local DB asset placeholders
 │       ├── bird-interact-scale/
 │       └── tpch-3g/
@@ -44,7 +44,7 @@ The Diff-SQL training dataset is released at `birdsql/Diff-SQL`:
 patch-generator-training-dataset/
   train.parquet
   dev.parquet
-constraint-aligner-training-dataset/
+correctness-aligner-training-dataset/
   train.parquet
   dev.parquet
 ```
@@ -60,8 +60,8 @@ Place or symlink those files into the repository paths below:
 ```text
 data/training/patch-generator/train.parquet
 data/training/patch-generator/dev.parquet
-data/training/constraint-aligner/train.parquet
-data/training/constraint-aligner/dev.parquet
+data/training/correctness-aligner/train.parquet
+data/training/correctness-aligner/dev.parquet
 data/benchmark/effi-sql/effi-sql-pg.jsonl
 ```
 
@@ -70,8 +70,8 @@ Example:
 ```bash
 ln -s /path/to/Diff-SQL/patch-generator-training-dataset/train.parquet data/training/patch-generator/train.parquet
 ln -s /path/to/Diff-SQL/patch-generator-training-dataset/dev.parquet data/training/patch-generator/dev.parquet
-ln -s /path/to/Diff-SQL/constraint-aligner-training-dataset/train.parquet data/training/constraint-aligner/train.parquet
-ln -s /path/to/Diff-SQL/constraint-aligner-training-dataset/dev.parquet data/training/constraint-aligner/dev.parquet
+ln -s /path/to/Diff-SQL/correctness-aligner-training-dataset/train.parquet data/training/correctness-aligner/train.parquet
+ln -s /path/to/Diff-SQL/correctness-aligner-training-dataset/dev.parquet data/training/correctness-aligner/dev.parquet
 ln -s /path/to/Effi-SQL/effi-sql-pg.jsonl data/benchmark/effi-sql/effi-sql-pg.jsonl
 ```
 
@@ -190,14 +190,14 @@ Run Patch Generator SFT:
 bash scripts/run_train_sft.sh
 ```
 
-Run Constraint Aligner SFT warmup:
+Run correctness Aligner SFT warmup:
 
 ```bash
-TRAIN_DATA=data/training/constraint-aligner/train.parquet \
-DEV_DATA=data/training/constraint-aligner/dev.parquet \
+TRAIN_DATA=data/training/correctness-aligner/train.parquet \
+DEV_DATA=data/training/correctness-aligner/dev.parquet \
 MODEL_PATH=/path/to/base-model \
-OUTPUT_DIR=checkpoints/constraint-aligner-sft \
+OUTPUT_DIR=checkpoints/correctness-aligner-sft \
 bash scripts/run_train_sft.sh
 ```
 
-The HuggingFace `constraint-aligner-training-dataset` files are Constraint Aligner SFT warmup data.
+The HuggingFace `correctness-aligner-training-dataset` files are Constraint Aligner SFT warmup data.
